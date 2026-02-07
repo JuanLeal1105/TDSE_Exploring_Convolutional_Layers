@@ -20,6 +20,31 @@ The dataset contains "noise" in the form of red blood cells surrounding the targ
 
 ## **Assignment Tasks**
 
+### **Part 1. Dataset Exploration**
+The Blood Cell Images (BCCD) dataset was selected to classify white blood cell types. The initial exploration phase focused on understanding the data structure and quality before training.
+#### **Dataset Size and Class Distribution**
+The dataset contains a total of 9,957 images split into training (80%) and validation (20%) sets. The classes are remarkably balanced, with approximately 2,500 images per category, preventing the need for class weighting techniques.
+- Total images: 9957
+- Four classes were found:
+  - EOSINOPHIL
+  - LYMPHOCYTE
+  - MONOCYTE
+  - NEUTROPHIL
+    
+#### **Image Dimensions and Channel** 
+- Original Resolution: 320 x 240 pixels (Width x Height).
+- Color Channels: 3 (RGB).
+- Data Type: 8-bit Integer (0-255 pixel values).
+
+#### **Preprocessing Strategy**
+Based on the EDA, the following preprocessing pipeline is required before feeding data into the CNN:
+1. Resizing (Rectangular to Square):
+   - Issue: Original images are rectangular (320x240), but standard CNN kernels operate efficiently on square inputs.
+   - Action: Resize all images to 128x128.
+3. Normalization (Pixel Scaling):
+   - Issue: Raw pixel values range from [0, 255]. Large integer inputs can cause training instability (exploding gradients).
+   - Action: Rescale pixel values to the range [0, 1] by dividing by 255.0.
+
 ### **Part 2. Baseline Model (Non-Convolutional)**
 To establish a performance baseline, a standard Multi-Layer Perceptron (MLP) was trained on the raw pixel data without any convolutional layers. The base architecture is defined by:
 - Input: 128x128 RGB images (3 channels).
