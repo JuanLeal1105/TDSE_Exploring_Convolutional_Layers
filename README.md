@@ -70,7 +70,7 @@ The final loss stabilized at 1.3863. The mathematical context is the following: 
 2. Parameter Inefficiency: Despite having over 6 million parameters, the model failed to beat random chance. A CNN can achieve >90% accuracy with fewer parameters.
 3. Vanishing Gradient / Collapse: The accuracy graph shows a "collapse" behavior where the model gave up on learning features and converged to a trivial solution (predicting all classes equally).
 
-### **Part 3. Convolutional Architecture Design***
+### **Part 3. Convolutional Architecture Design**
 To solve the classification task efficiently, I designed a 4-stage Convolutional Neural Network (CNN). The architecture follows a pyramidal design: as the network goes deeper, the spatial dimensions (H x W) decrease while the feature depth (Filters) increases.
 #### **Design Decisions and Justifications**
 1. Number of Convolutional Layers (4 Blocks): A configuration of 4 Blocks of `Conv2D` + `MaxPooling2D`.
