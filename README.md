@@ -108,3 +108,32 @@ To solve the classification task efficiently, I designed a 4-stage Convolutional
    **Justification:**
    - Dimensionality Reduction: Each pooling step reduces the height and width by half, discarding 75% of the pixel data. This forces the model to retain only the most important features (the "max" activation).
    - Translation Invariance: By taking the maximum value in a local patch, the model recognizes a feature (e.g., a nucleus edge) regardless of its precise position within that patch. This is crucial since cells are not perfectly centered in every image.
+  
+### **Part 4. Controlled Experiments of the Convolutional Layer**
+I performed a systematic comparison between two kernel sizes to determine the optimal "receptive field" for classifying blood cells. The idea for the test is:
+- Model A: Standard Kernels (3 x 3)
+- Model B: Large Kernels (7 x 7)
+- Constants: Batch Normalization, Learning Rate (0.0001), 3 Epochs.
+
+#### **Quantitative Results**
+| Metric | Model A ($3 \times 3$) | Model B ($7 \times 7$) | Impact |
+| :--- | :--- | :--- | :--- |
+| **Validation Accuracy** | **57.11%** | 33.08% | $3 \times 3$ is **+24%** more accurate |
+| **Validation Loss** | **0.93** (Converging) | 5.32 (Unstable) | $7 \times 7$ failed to converge (Exploding Gradient) |
+| **Training Time** | **~48 sec / epoch** | ~180 sec / epoch | $7 \times 7$ is **~3.8x slower** |
+| **Parameters** | 1,291,460 | 2,360,260 | $7 \times 7$ requires **~2x memory** |
+
+#### **Qualitative Observations**
+- Instability of Large Kernels: The 7 x 7 model exhibited severe instability. In Epoch 2, the validation loss exploded to 12.72, indicating that the large filters were causing the gradients to oscillate wildly. It struggled to recover by Epoch 3.
+- Computational Cost: The 7 x 7 model was computationally exhausting, taking 3 minutes per epoch (compared to 47 seconds for Model A) and draining system resources.
+- The Breakthrough Moment: The 3 x 3 model started slow but showed a healthy learning curve, jumping from 28% to 57% accuracy in Epoch 3 once it stabilized. The 7 x 7 model actually degraded in generalization (High Training Acc of 65% vs Low Val Acc of 33%), a classic sign of overfitting.
+
+#### **Trade-Offs (Performance vs Complexity)**
+The experiment reveals a decisive trade-off: Increasing kernel size drastically increased complexity while degrading performance.
+- Complexity Penalty: Using 7 x 7 kernels doubled the parameter count and quadrupled the training time.
+- Visual Logic: White blood cell classification relies on fine details (granules, texture). A large 7 x 7 kernel acts like a blur filter, smoothing out these critical details. The smaller 3 x 3 kernel successfully captured the high-frequency features needed to distinguish the cells.
+
+**Conclusion**
+
+The 3 x 3 kernel is the superior choice in every metric: speed, stability, efficiency, and accuracy.
+
