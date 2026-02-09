@@ -157,6 +157,34 @@ Convolution is inappropriate when the spatial relationship between features is i
 - Fixed-Location Data: If a feature's meaning is strictly tied to its absolute coordinates (e.g., in some physics simulations where x=0 has a special boundary condition distinct from x=100), the translation invariance of CNNs can actually be a hindrance, as the model "forgets" where the feature is located (unless coordinate channels are added).
 
 ---
+## **Bonus. Visualization of learned filters or feature maps**
+
+### 1. Structure Preservation (Spatial Awareness)
+
+Unlike the Baseline model (which damaged the shapes), these feature maps keep the spatial structure of the cell quite well.  
+You can clearly notice the round shapes of the surrounding Red Blood Cells (RBCs) and the irregular shape of the central Eosinophil.
+
+This shows that the model is learning to analyze pixels together with their neighbors instead of treating them independently.
+
+### 2. Specific Feature Extraction
+
+The 32 filters act like detectors with different purposes:
+
+- Edge detectors: Some maps highlight strong borders of the cell membranes.
+- Texture/contrast filters: Other maps emphasize texture changes or intensity differences.
+- Background filters: Some maps react more strongly to the background and RBCs.
+- Target filters: Others activate mainly on the central Eosinophil while ignoring most of the background noise.
+
+This suggests the network is already starting to distinguish the white blood cell from red blood cells using color and intensity differences (purple vs. pink).
+
+### 3. Granularity Detection
+
+Eosinophils are known for having granular cytoplasm.  
+In some active feature maps, the central cell looks textured or speckled instead of smooth.
+
+This indicates that even the first layer is already detecting fine texture patterns that help distinguish Eosinophils from other cell types.
+
+---
 
 ## **Bibliography**
 1. (S/f). Researchgate.net. Recuperado el 9 de febrero de 2026, de https://www.researchgate.net/figure/A-convolutional-operation-where-a-kernel-is-applied-to-a-3-3-set-of-neighboring_fig2_370341106
