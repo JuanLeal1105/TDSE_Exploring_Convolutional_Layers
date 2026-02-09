@@ -137,3 +137,29 @@ The experiment reveals a decisive trade-off: Increasing kernel size drastically 
 
 The 3 x 3 kernel is the superior choice in every metric: speed, stability, efficiency, and accuracy.
 
+### **Part 5. Interpretation and Architectural Reasoning**
+#### **Why did convolutional layers outperform (or not) the baseline?**
+The Baseline model (Multi-Layer Perceptron) failed because it treats an image as a bag of unrelated pixels. By flattening the $128 \times 128$ image into a 1D vector of 16,384 inputs, the dense network destroys all spatial structure. It attempts to learn a unique weight for every single pixel position, meaning it has to "re-learn" what a cell edge looks like for every possible location in the image. This leads to the Parameter Explosion we observed (~6 million parameters) and immediate overfitting.
+
+In contrast, the Convolutional Neural Network (CNN) outperformed the baseline because it respects the spatial nature of the data.
+- Parameter Sharing: Instead of learning a separate weight for every pixel, the CNN learns a single filter (e.g., an "edge detector") and slides it across the entire image. This allowed our CNN to achieve higher accuracy with fewer parameters (~1 million vs 6 million).
+- Hierarchical Learning: The CNN builds features compositionally. The first layer detects edges; the second detects textures (granules); the third detects shapes (nuclei). The baseline model cannot build this hierarchy; it tries to map raw pixels directly to classes in one massive, inefficient step.
+
+#### **What inductive bias does convolution introduce?**
+Inductive bias refers to the set of assumptions a model makes about the data to learn effectively with fewer examples. Convolution introduces two specific biases:
+- Locality (Local Connectivity): The assumption that pixels close to each other are highly correlated, while distant pixels are weakly correlated. A 3 x 3 kernel only looks at neighboring pixels to form a feature, ignoring the rest of the image. This aligns perfectly with biological images, where a cell's nucleus is defined by the pixels immediately surrounding it, not by pixels in the opposite corner of the image.
+- Translation Invariance (Stationarity): The assumption that a feature (e.g., a cell nucleus) is the same object regardless of where it appears in the image. Because the same kernel weights are shared across the entire input, the network recognizes a "Neutrophil" whether it is in the top-left or bottom-right corner. The Baseline model lacks this bias; if it learned a Neutrophil in the top-left, it would not recognize one in the bottom-right without seeing new training examples.
+
+#### **In what type of problems would convolution not be appropriate?**
+Convolution is inappropriate when the spatial relationship between features is irrelevant or non-existent.
+- Tabular Data: In a dataset of patient records (Age, Blood Pressure, Cholesterol), the order of columns does not matter. "Age" next to "Cholesterol" has no spatial meaning. Using a sliding window (convolution) across these columns would imply a relationship between adjacent features that doesn't exist.
+- Permutation-Invariant Data: If shuffling the input features (randomly rearranging pixels or columns) changes the meaning of the data, CNNs are good. If shuffling the features does not change the meaning (like a bag of words in simple text classification), CNNs are less effective because they search for local patterns that aren't there.
+- Fixed-Location Data: If a feature's meaning is strictly tied to its absolute coordinates (e.g., in some physics simulations where x=0 has a special boundary condition distinct from x=100), the translation invariance of CNNs can actually be a hindrance, as the model "forgets" where the feature is located (unless coordinate channels are added).
+
+---
+
+## **Bibliography**
+1. (S/f). Researchgate.net. Recuperado el 9 de febrero de 2026, de https://www.researchgate.net/figure/A-convolutional-operation-where-a-kernel-is-applied-to-a-3-3-set-of-neighboring_fig2_370341106
+2. Wikipedia contributors. (2025, diciembre 22). Inductive bias. Wikipedia, The Free Encyclopedia. https://en.wikipedia.org/w/index.php?title=Inductive_bias&oldid=1328896465
+3. Olu-Ipinlaye, O. (2023, enero 18). Translation invariance & equivariance in convolutional neural networks. Paperspace by DigitalOcean Blog. https://blog.paperspace.com/pooling-and-translation-invariance-in-convolutional-neural-networks/
+4. convnet. (s/f). Toronto.edu. Recuperado el 9 de febrero de 2026, de https://www.cs.toronto.edu/~lczhang/360/lec/w04/convnet.html
