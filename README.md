@@ -156,7 +156,7 @@ Convolution is inappropriate when the spatial relationship between features is i
 - Permutation-Invariant Data: If shuffling the input features (randomly rearranging pixels or columns) changes the meaning of the data, CNNs are good. If shuffling the features does not change the meaning (like a bag of words in simple text classification), CNNs are less effective because they search for local patterns that aren't there.
 - Fixed-Location Data: If a feature's meaning is strictly tied to its absolute coordinates (e.g., in some physics simulations where x=0 has a special boundary condition distinct from x=100), the translation invariance of CNNs can actually be a hindrance, as the model "forgets" where the feature is located (unless coordinate channels are added).
 
-### **Part 5. Deployment**
+### **Part 6. Deployment**
 The final model with all the trained 3 x 3 kernels was exported into a `.h5` file in order to access it during the trials of our endpoint. Due to permission issues, the deployment in SageMaker was impossible to do, so, as well as the previous laboratory, I decided to expose and endpoint locally.
 
 **Deployment Locally**
