@@ -156,6 +156,60 @@ Convolution is inappropriate when the spatial relationship between features is i
 - Permutation-Invariant Data: If shuffling the input features (randomly rearranging pixels or columns) changes the meaning of the data, CNNs are good. If shuffling the features does not change the meaning (like a bag of words in simple text classification), CNNs are less effective because they search for local patterns that aren't there.
 - Fixed-Location Data: If a feature's meaning is strictly tied to its absolute coordinates (e.g., in some physics simulations where x=0 has a special boundary condition distinct from x=100), the translation invariance of CNNs can actually be a hindrance, as the model "forgets" where the feature is located (unless coordinate channels are added).
 
+### **Part 5. Deployment**
+The final model with all the trained 3 x 3 kernels was exported into a `.h5` file in order to access it during the trials of our endpoint. Due to permission issues, the deployment in SageMaker was impossible to do, so, as well as the previous laboratory, I decided to expose and endpoint locally.
+
+**Deployment Locally**
+The final model with all the six features was exproted into a JSON format in order to be used in our API. Just to clarify, due to certain limitations in SageMaker I was unable to deploy in the domain that was created. however, I decided to create a local deployment in order to test the model. Here is a list of the files used and what they are used for:
+- **api.py**  
+  Implements a local REST API using Flask.  
+  It loads the trained convolutional model and exposes the `/predict` endpoint.
+
+- **blood_cell_model.h5**  
+  Contains all exported artifacts from training in one place.
+
+- **test_endpoint.py**  
+  Acts as a local client for testing the API.  It defines multiple images for testing that are later classified according to the trained model.
+
+**Running the API Locally**
+
+First of all, all the right dependencies must be installes, so in order to do so execute the following comands:
+```
+python -m pip install flask numpy requests
+python3 -m pip install flask numpy requests  #Some machines use python3
+```
+
+After doing so, in order to run the deployment, follow the next steps:
+1. Starting the API
+   ```
+   python api.py
+   ```
+   You might as well use `python3`if needed depending on your computer
+   
+2. Using the endpoint and testing.  Open a new terminal and run the following command:
+   ```
+   python test_endpoint.py
+   ```
+   You might as well use `python3`if needed depending on your computer
+
+**Deployment Evidence**
+Here's the evidence that indeed the api is working in a local evironment:
+
+**Screenshot #1**
+![alt text](Images/Running.png)
+
+In the previous image, we can see that the API is correctly running in a local evironment, meaning that is ready to be tested. 
+
+**Screenshot #2**
+![alt text](Images/Result.png)
+
+Here are the results that were obtained after using the predict endpoint that was created.
+
+**Screenshot #3**
+![alt text](Images/Proof.png)
+
+Returning to the terminal in which the API is running we can see that all three requests were processed and in case we wish to test the API a bit more, leave it running and create some more `test.py` files so that the predict endpoint is used.
+
 ---
 ## **Bonus. Visualization of learned filters or feature maps**
 
