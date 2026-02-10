@@ -1,4 +1,7 @@
 # TDSE_Exploring_Convolutional_Layers
+**Created by**
+
+Juan Carlos Leal Cruz
 
 ## Justification: Why this Dataset is Appropriate for Convolutional Layers
 
